@@ -7,16 +7,23 @@
         </v-toolbar>
 
         <div class="pl-4 pr-4 pt-2 pb-2">
+          <form
+          name="post-tracker-form"
+          autocomplete="off">
 
-          <v-text-field
-            name="email"
-            label="Email"
-            v-model="email"/>
+            <v-text-field
+              name="email"
+              label="Email"
+              v-model="email"/>
 
-          <v-text-field
-            name="password"
-            label="Password"
-            v-model="password"/>
+            <v-text-field
+              name="password"
+              label="Password"
+              type="password"
+              v-model="password"
+              auto-complete="new-password"/>
+
+          </form>
 
           <br>
 
@@ -39,7 +46,7 @@
 </template>
 
 <script>
-import AuthentificationService from '@/services/AuthentificationService'
+import AuthenticationService from '@/services/AuthenticationService'
 export default {
   data () {
     return {
@@ -51,10 +58,12 @@ export default {
   methods: {
     async register () {
       try {
-        await AuthentificationService.register({
+        const response = await AuthenticationService.regsiter({
           email: this.email,
           password: this.password
         })
+        this.$store.dispatch('setToken', response.data.token)
+        this.$store.dispatch('setUser', response.data.user)
       } catch (error) {
         this.error = error.response.data.error
       }
